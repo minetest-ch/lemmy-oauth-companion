@@ -40,3 +40,10 @@ jobs:
         run: |
           docker build . -t ghcr.io/minetest-ch/lemmy-oauth-companion:latest
           docker push ghcr.io/minetest-ch/lemmy-oauth-companion:latest
+
+      - name: Trigger lemmy.minetest.ch deployment
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          repository: minetest-ch/lemmy.minetest.ch
+          event-type: deploy
