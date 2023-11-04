@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"net/http"
 	"os"
@@ -15,6 +16,9 @@ import (
 var lemmydb *LemmyDatabase
 
 var oauth_providers = map[string]provider.OAuthProvider{}
+
+//go:embed assets/*
+var Assets embed.FS
 
 func main() {
 	db, err := sql.Open("postgres", os.Getenv("POSTGRES_URL"))
@@ -37,6 +41,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/oauth-login/{provider}", HandleOAuthRedirect)
 	r.HandleFunc("/oauth-login/{provider}/callback", HandleOAuthCallback)
+
+	r.PathPrefix("/oauth-login").Handler(http.StripPrefix("/oauth-login", http.FileServer(http.FS(Assets))))
 
 	fmt.Println("start")
 
