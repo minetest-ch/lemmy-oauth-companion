@@ -117,7 +117,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		Name:     "jwt",
 		Value:    lemmyclient.Token,
 		Path:     "/",
-		Secure:   r.URL.Scheme == "https",
+		Secure:   os.Getenv("COOKIE_SECURE") == "true",
 		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		HttpOnly: false,
 		SameSite: http.SameSiteStrictMode,

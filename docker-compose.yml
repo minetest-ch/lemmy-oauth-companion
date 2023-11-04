@@ -42,6 +42,7 @@ services:
       POSTGRES_URL: postgresql://postgres:enter@postgres/postgres?sslmode=disable
       LEMMY_URL: "http://lemmy:8536"
       BASE_URL: "http://localhost:8000"
+      COOKIE_SECURE: "false"
     env_file:
      - .env
     depends_on:
