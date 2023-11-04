@@ -67,6 +67,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		return fmt.Errorf("search error: %v", err)
 	}
 
+	// check if there is already an account by that name
 	var found_person *types.Person
 	for _, res := range search_res.Users {
 		if res.Person.Name == normalized_username {
@@ -106,6 +107,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		}
 	}
 
+	// log in with the password-marker for that oauth provider
 	err = lemmyclient.ClientLogin(ctx, types.Login{
 		UsernameOrEmail: normalized_username,
 		Password:        password_marker,
@@ -114,6 +116,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		return fmt.Errorf("login error: %v", err)
 	}
 
+	// set the cookie with the returned jwt
 	http.SetCookie(w, &http.Cookie{
 		Name:     "jwt",
 		Value:    lemmyclient.Token,

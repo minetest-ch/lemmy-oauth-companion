@@ -1,10 +1,30 @@
 
 Lemmy sidecar/companion for oauth login
 
+# Supported OAuth providers
+
+* [Github](https://github.com)
+* [Contentdb](https://content.minetest.ch)
+
 # How it works
 
 **Warning**:
 This project uses script injection via `LEMMY_UI_CUSTOM_HTML_HEADER` and some routing-tricks (see `nginx.conf`) to achieve its goal.
+
+Connections:
+* pgsql connection to the lemmy database (for retireving the captcha answer on signup)
+* rest connection to the lemmy instance for user-search, signup and login
+
+## Login process
+
+* User clicks the "Login with xxx" button on the Login page
+* User lands on the `/oauth-login/${oauth-provider}` page and gets redirected to the provider-login
+* User gets redirected from the oauth-provider to the callback url `/oauth-login/${oauth-provider}/callback` with a code
+* Backend retrieves the user-infos from the oauth-provider and creates a normalized/sanitized username
+* If the username doesn't exist already: register new user via lemmy rest api (and captcha-answer from db)
+* Log-in with the username and a per-provider password marker (to avoid account-takeover from other providers)
+* Set jwt-cookie with value returned from login-call
+* Redirect user to lemmy instance on `/`
 
 # Dev
 
