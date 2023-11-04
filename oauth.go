@@ -121,7 +121,21 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		HttpOnly: false,
 		SameSite: http.SameSiteStrictMode,
 	})
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+
+	// serve a "html-redirect" instead of a real 30x to work around this bug: https://stackoverflow.com/a/71467131
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(`
+	<!DOCTYPE html>
+	<html>
+		<head>
+			<meta http-equiv="refresh" content="0; url='/'">
+		</head>
+		<body>
+			<a href="/">Click here if you are not redirected automatically</a>
+		</body>
+	</html>
+	`))
+
 	return nil
 }
 
