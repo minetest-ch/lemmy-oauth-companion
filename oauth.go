@@ -57,6 +57,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 
 	normalized_username := strings.ReplaceAll(user.Name, "-", "_")
 	normalized_username = strings.ReplaceAll(normalized_username, " ", "_")
+	normalized_username = strings.ReplaceAll(normalized_username, ".", "_")
 
 	search_res, err := lemmyclient.Search(ctx, types.Search{
 		Type: types.NewOptional(types.SearchTypeUsers),
