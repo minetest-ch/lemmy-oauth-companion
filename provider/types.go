@@ -8,6 +8,7 @@ type OAuthUserInfo struct {
 	Name       string
 	Email      string
 	ExternalID string
+	AvatarURL  string
 }
 
 type OAuthProvider interface {

@@ -85,9 +85,12 @@ func (p *GithubOAuthProvider) GetUserInfo(code string) (*OAuthUserInfo, error) {
 		return nil, fmt.Errorf("user response error: %v", err)
 	}
 
-	return &OAuthUserInfo{
+	oi := &OAuthUserInfo{
 		Name:       userData.Login,
 		Email:      userData.Email,
+		AvatarURL:  fmt.Sprintf("https://github.com/%s.png", userData.Login),
 		ExternalID: fmt.Sprintf("%d", userData.ID),
-	}, nil
+	}
+
+	return oi, nil
 }

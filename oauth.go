@@ -54,8 +54,12 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		}
 	}
 
+	first_login := false
+
 	if found_person == nil {
 		// no person with that name, create one
+		first_login = true
+
 		captcha, err := lemmyclient.Captcha(ctx, types.GetCaptcha{})
 		if err != nil {
 			return fmt.Errorf("get captcha error: %v", err)
@@ -92,6 +96,19 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	})
 	if err != nil {
 		return fmt.Errorf("login error: %v", err)
+	}
+
+	if user.AvatarURL != "" && first_login {
+		// Save avatar from oauth provider if this is the first login
+		_, err = lemmyclient.SaveUserSettings(ctx, types.SaveUserSettings{
+			Auth:        lemmyclient.Token,
+			Avatar:      types.NewOptional(user.AvatarURL),
+			BotAccount:  types.NewOptional(false),
+			ShowAvatars: types.NewOptional(true),
+		})
+		if err != nil {
+			return fmt.Errorf("set avatar error: %v", err)
+		}
 	}
 
 	// set the cookie with the returned jwt
