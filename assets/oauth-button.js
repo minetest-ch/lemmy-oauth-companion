@@ -2,7 +2,6 @@
 let created = false;
 
 function createButtons(parentEl) {
-    console.log("createButtons", parentEl);
     created = true;
 
     let b = document.createElement("a");
