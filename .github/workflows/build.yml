@@ -27,16 +27,16 @@ jobs:
           path-to-profile: profile.cov
 
       - name: Log in to the Container registry
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # step for master/latest (docker only)
+      # step for main/latest (docker only)
       - name: Build and push latest docker image
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/main'
         run: |
           docker build . -t ghcr.io/minetest-ch/lemmy-oauth-companion:latest
           docker push ghcr.io/minetest-ch/lemmy-oauth-companion:latest
