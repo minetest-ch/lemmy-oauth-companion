@@ -121,7 +121,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		HttpOnly: false,
 		SameSite: http.SameSiteStrictMode,
 	})
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	return nil
 }
 
