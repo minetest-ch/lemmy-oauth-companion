@@ -1,0 +1,23 @@
+{
+  # for more info about the config, check out the documentation
+  # https://join-lemmy.org/docs/en/administration/configuration.html
+
+  database: {
+    host: postgres
+    user: postgres
+    password: "enter"
+    database: postgres
+  }
+  hostname: "lemmy.minetest.ch"
+  pictrs: {
+    url: "http://pictrs:8080/"
+    api_key: "enter"
+  }
+  email: {
+    smtp_server: "apheleia.rudin.io:587"
+    smtp_login: "lemmy@minetest.ch"
+    smtp_from_address: "lemmy@minetest.ch"
+    smtp_password: "9won8mt2072l18GOTKXLBYBTX"
+    tls_type: "starttls"
+  }
+}
