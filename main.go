@@ -31,6 +31,7 @@ func main() {
 	oauth_providers["github"] = &provider.GithubOAuthProvider{
 		ClientID:     os.Getenv("GITHUB_CLIENTID"),
 		ClientSecret: os.Getenv("GITHUB_SECRET"),
+		// BaseURL not needed, github uses the one configured in the oauth app
 	}
 	oauth_providers["cdb"] = &provider.CDBOAuthProvider{
 		ClientID:     os.Getenv("CDB_CLIENTID"),
@@ -44,8 +45,7 @@ func main() {
 
 	r.PathPrefix("/oauth-login").Handler(http.StripPrefix("/oauth-login", http.FileServer(http.FS(Assets))))
 
-	fmt.Println("start")
-
 	http.Handle("/", r)
+	fmt.Println("Listening on port 8080")
 	http.ListenAndServe(":8080", nil)
 }

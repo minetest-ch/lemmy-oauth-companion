@@ -15,28 +15,6 @@ import (
 	"go.elara.ws/go-lemmy/types"
 )
 
-type GithubAccessTokenRequest struct {
-	ClientID     string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	Code         string `json:"code"`
-}
-
-type AccessTokenResponse struct {
-	AccessToken string `json:"access_token"`
-}
-
-type GithubUserResponse struct {
-	ID    int    `json:"id"`
-	Login string `json:"login"`
-	Email string `json:"email"`
-}
-
-type GithubUserMail struct {
-	Email    string `json:"email"`
-	Primary  bool   `json:"primary"`
-	Verified bool   `json:"verified"`
-}
-
 func HandleOAuthRedirect(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	p := oauth_providers[vars["provider"]]
