@@ -12,7 +12,7 @@ Lemmy sidecar/companion for oauth login
 This project uses script injection via `LEMMY_UI_CUSTOM_HTML_HEADER` and some routing-tricks (see `nginx.conf`) to achieve its goal.
 
 Connections:
-* pgsql connection to the lemmy database (for retireving the captcha answer on signup)
+* pgsql connection to the lemmy database (for retrieving the captcha answer on signup)
 * rest connection to the lemmy instance for user-search, signup and login
 
 ## Login process
