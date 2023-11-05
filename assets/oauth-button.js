@@ -3,6 +3,7 @@ let created = false;
 
 function createButtons(parentEl) {
     created = true;
+    parentEl.className = "col-sm-12 btn-group";
 
     let b = document.createElement("a");
     b.className = "btn btn-primary";
@@ -14,6 +15,12 @@ function createButtons(parentEl) {
     b.className = "btn btn-primary";
     b.innerText = "Login with ContentDB";
     b.href = "/oauth-login/cdb";
+    parentEl.append(b);
+
+    b = document.createElement("a");
+    b.className = "btn btn-primary";
+    b.innerText = "Login with Mesehub";
+    b.href = "/oauth-login/mesehub";
     parentEl.append(b);
 }
 

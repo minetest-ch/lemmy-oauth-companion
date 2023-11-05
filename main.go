@@ -38,6 +38,11 @@ func main() {
 		ClientSecret: os.Getenv("CDB_SECRET"),
 		BaseURL:      os.Getenv("BASE_URL"),
 	}
+	oauth_providers["mesehub"] = &provider.MesehubOAuthProvider{
+		ClientID:     os.Getenv("MESEHUB_CLIENTID"),
+		ClientSecret: os.Getenv("MESEHUB_SECRET"),
+		BaseURL:      os.Getenv("BASE_URL"),
+	}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/oauth-login/{provider}", HandleOAuthRedirect)
