@@ -95,7 +95,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		Password:        password_marker,
 	})
 	if err != nil {
-		return fmt.Errorf("login error: %v", err)
+		return fmt.Errorf("login error: %v (this can happen if you already have a registered account on another oauth provider)", err)
 	}
 
 	if user.AvatarURL != "" && first_login {
