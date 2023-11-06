@@ -103,7 +103,7 @@ func (p *CDBOAuthProvider) GetUserInfo(code string) (*OAuthUserInfo, error) {
 	}
 
 	// fetch user profile
-	req, err = http.NewRequest("GET", fmt.Sprintf("https://content.minetest.net/api/users/%s", userData.Username), nil)
+	req, err = http.NewRequest("GET", fmt.Sprintf("https://content.minetest.net/api/users/%s/", userData.Username), nil)
 	if err != nil {
 		return nil, fmt.Errorf("new user-profile request error: %v", err)
 	}
