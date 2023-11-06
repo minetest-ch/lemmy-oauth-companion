@@ -5,10 +5,11 @@ type AccessTokenResponse struct {
 }
 
 type OAuthUserInfo struct {
-	Name       string
-	Email      string
-	ExternalID string
-	AvatarURL  string
+	Name        string
+	Email       string
+	ExternalID  string
+	AvatarURL   string
+	DisplayName string
 }
 
 type OAuthProvider interface {

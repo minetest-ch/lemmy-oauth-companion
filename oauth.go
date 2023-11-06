@@ -54,12 +54,8 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		}
 	}
 
-	first_login := false
-
 	if found_person == nil {
 		// no person with that name, create one
-		first_login = true
-
 		captcha, err := lemmyclient.Captcha(ctx, types.GetCaptcha{})
 		if err != nil {
 			return fmt.Errorf("get captcha error: %v", err)
@@ -98,16 +94,29 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		return fmt.Errorf("login error: %v (this can happen if you already have a registered account on another oauth provider)", err)
 	}
 
-	if user.AvatarURL != "" && first_login {
-		// Save avatar from oauth provider if this is the first login
-		_, err = lemmyclient.SaveUserSettings(ctx, types.SaveUserSettings{
-			Auth:        lemmyclient.Token,
-			Avatar:      types.NewOptional(user.AvatarURL),
-			BotAccount:  types.NewOptional(false),
-			ShowAvatars: types.NewOptional(true),
-		})
+	// sync user profile
+	us := types.SaveUserSettings{
+		Auth:        lemmyclient.Token,
+		BotAccount:  types.NewOptional(false),
+		ShowAvatars: types.NewOptional(true),
+	}
+
+	sync_account := false
+
+	if user.AvatarURL != "" {
+		sync_account = true
+		us.Avatar = types.NewOptional(user.AvatarURL)
+	}
+
+	if user.DisplayName != "" {
+		sync_account = true
+		us.DisplayName = types.NewOptional(user.DisplayName)
+	}
+
+	if sync_account {
+		_, err = lemmyclient.SaveUserSettings(ctx, us)
 		if err != nil {
-			return fmt.Errorf("set avatar error: %v", err)
+			return fmt.Errorf("set user profile error: %v", err)
 		}
 	}
 

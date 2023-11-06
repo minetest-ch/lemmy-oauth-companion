@@ -19,6 +19,12 @@ type CDBbUserResponse struct {
 	Username string `json:"username"`
 }
 
+type CDBUser struct {
+	Username      string `json:"username"`
+	DisplayName   string `json:"display_name"`
+	ProfilePicURL string `json:"profile_pic_url"` // "/uploads/xyz.jpg"
+}
+
 func (p *CDBOAuthProvider) GetRedirectURL() string {
 	callback_url := fmt.Sprintf("%s/oauth-login/cdb/callback", p.BaseURL)
 	return fmt.Sprintf("https://content.minetest.net/oauth/authorize/?response_type=code&client_id=%s&redirect_uri=%s", p.ClientID, url.QueryEscape(callback_url))
@@ -92,7 +98,36 @@ func (p *CDBOAuthProvider) GetUserInfo(code string) (*OAuthUserInfo, error) {
 		return nil, fmt.Errorf("empty username from cdb received")
 	}
 
-	return &OAuthUserInfo{
+	oi := &OAuthUserInfo{
 		Name: userData.Username,
-	}, nil
+	}
+
+	// fetch user profile
+	req, err = http.NewRequest("GET", fmt.Sprintf("https://content.minetest.net/api/users/%s/", userData.Username), nil)
+	if err != nil {
+		return nil, fmt.Errorf("new user-profile request error: %v", err)
+	}
+	req.Header.Set("Accept", "application/json")
+
+	resp, err = client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("get user-profile error: %v", err)
+	}
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("unexpected status-code from user-profile api: %d", resp.StatusCode)
+	}
+	defer resp.Body.Close()
+
+	userProfile := CDBUser{}
+	err = json.NewDecoder(resp.Body).Decode(&userProfile)
+	if err != nil {
+		return nil, fmt.Errorf("user-profile response error: %v", err)
+	}
+
+	if userProfile.ProfilePicURL != "" {
+		oi.AvatarURL = fmt.Sprintf("https://content.minetest.net%s", userProfile.ProfilePicURL)
+	}
+	oi.DisplayName = userProfile.DisplayName
+
+	return oi, nil
 }
