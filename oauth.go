@@ -101,17 +101,23 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		ShowAvatars: types.NewOptional(true),
 	}
 
+	sync_account := false
+
 	if user.AvatarURL != "" {
+		sync_account = true
 		us.Avatar = types.NewOptional(user.AvatarURL)
 	}
 
 	if user.DisplayName != "" {
+		sync_account = true
 		us.DisplayName = types.NewOptional(user.DisplayName)
 	}
 
-	_, err = lemmyclient.SaveUserSettings(ctx, us)
-	if err != nil {
-		return fmt.Errorf("set user profile error: %v", err)
+	if sync_account {
+		_, err = lemmyclient.SaveUserSettings(ctx, us)
+		if err != nil {
+			return fmt.Errorf("set user profile error: %v", err)
+		}
 	}
 
 	// set the cookie with the returned jwt
