@@ -96,8 +96,9 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 
 	// sync user profile
 	us := types.SaveUserSettings{
-		Auth:       lemmyclient.Token,
-		BotAccount: types.NewOptional(false),
+		Auth:        lemmyclient.Token,
+		BotAccount:  types.NewOptional(false),
+		ShowAvatars: types.NewOptional(true),
 	}
 
 	if user.AvatarURL != "" {
