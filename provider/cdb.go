@@ -127,6 +127,7 @@ func (p *CDBOAuthProvider) GetUserInfo(code string) (*OAuthUserInfo, error) {
 	if userProfile.ProfilePicURL != "" {
 		oi.AvatarURL = fmt.Sprintf("https://content.minetest.net%s", userProfile.ProfilePicURL)
 	}
+	oi.DisplayName = userProfile.DisplayName
 
 	return oi, nil
 }
