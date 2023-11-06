@@ -42,6 +42,7 @@ jobs:
           docker push ghcr.io/minetest-ch/lemmy-oauth-companion:latest
 
       - name: Trigger lemmy.minetest.ch deployment
+        if: success() && github.ref == 'refs/heads/main'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
