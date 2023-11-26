@@ -108,7 +108,8 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		us.Avatar = types.NewOptional(user.AvatarURL)
 	}
 
-	if user.DisplayName != "" {
+	// DisplayName needs to be at least 3 characters long
+	if user.DisplayName != "" && len(user.DisplayName) >= 3 {
 		sync_account = true
 		us.DisplayName = types.NewOptional(user.DisplayName)
 	}
