@@ -5,7 +5,7 @@ RUN go mod download
 COPY . .
 RUN go test ./... -vet=off && CGO_ENABLED=0 go build .
 
-FROM alpine:3.18.4
+FROM alpine:3.18.5
 WORKDIR /
 COPY --from=go-app /data/lemmy-oauth-companion /
 CMD ["/lemmy-oauth-companion"]
