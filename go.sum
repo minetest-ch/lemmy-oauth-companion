@@ -7,4 +7,6 @@ github.com/lib/pq v1.10.9 h1:YXG7RB+JIjhP29X+OtkiDnYaXQwpS4JEWq7dtCCRUEw=
 github.com/lib/pq v1.10.9/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 go.elara.ws/go-lemmy v0.18.4 h1:xIZjih/KFqP4FM6rw7EZpNM6EqIJvK2156sgohYKfgE=
 go.elara.ws/go-lemmy v0.18.4/go.mod h1:aZbF/4c1VA7qPXsP4Pth0ERu3HGZFPPl8bTY1ltBrcQ=
+go.elara.ws/go-lemmy v0.19.0 h1:FdPfiA+8yOa2IhrLdBp8jdYbnY6H55bfwnBbiGr0OHg=
+go.elara.ws/go-lemmy v0.19.0/go.mod h1:aZbF/4c1VA7qPXsP4Pth0ERu3HGZFPPl8bTY1ltBrcQ=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=

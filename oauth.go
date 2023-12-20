@@ -12,7 +12,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"go.elara.ws/go-lemmy"
-	"go.elara.ws/go-lemmy/types"
 )
 
 func HandleOAuthRedirect(w http.ResponseWriter, r *http.Request) {
@@ -37,8 +36,8 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	normalized_username = strings.ReplaceAll(normalized_username, " ", "_")
 	normalized_username = strings.ReplaceAll(normalized_username, ".", "_")
 
-	search_res, err := lemmyclient.Search(ctx, types.Search{
-		Type: types.NewOptional(types.SearchTypeUsers),
+	search_res, err := lemmyclient.Search(ctx, lemmy.Search{
+		Type: lemmy.NewOptional(lemmy.SearchTypeUsers),
 		Q:    normalized_username,
 	})
 	if err != nil {
@@ -46,7 +45,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	}
 
 	// check if there is already an account by that name
-	var found_person *types.Person
+	var found_person *lemmy.Person
 	for _, res := range search_res.Users {
 		if res.Person.Name == normalized_username {
 			found_person = &res.Person
@@ -56,29 +55,29 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 
 	if found_person == nil {
 		// no person with that name, create one
-		captcha, err := lemmyclient.Captcha(ctx, types.GetCaptcha{})
+		captcha, err := lemmyclient.Captcha(ctx)
 		if err != nil {
 			return fmt.Errorf("get captcha error: %v", err)
 		}
 
-		uuid := captcha.Ok.MustValue().Uuid
+		uuid := captcha.Ok.ValueOrZero().UUID
 		answer, err := lemmydb.GetCaptchaAnswer(uuid)
 		if err != nil {
 			return fmt.Errorf("captcha answer error: %v", err)
 		}
 
-		mail := types.NewOptionalNil[string]()
+		mail := lemmy.NewOptionalNil[string]()
 		if user.Email != "" {
-			mail = types.NewOptional(user.Email)
+			mail = lemmy.NewOptional(user.Email)
 		}
 
-		_, err = lemmyclient.Register(ctx, types.Register{
+		_, err = lemmyclient.Register(ctx, lemmy.Register{
 			Email:          mail,
 			Username:       normalized_username,
 			Password:       password_marker,
 			PasswordVerify: password_marker,
-			CaptchaAnswer:  types.NewOptional(answer),
-			CaptchaUuid:    types.NewOptional(uuid),
+			CaptchaAnswer:  lemmy.NewOptional(answer),
+			CaptchaUUID:    lemmy.NewOptional(uuid),
 		})
 		if err != nil {
 			return fmt.Errorf("register error: %v", err)
@@ -86,7 +85,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	}
 
 	// log in with the password-marker for that oauth provider
-	err = lemmyclient.ClientLogin(ctx, types.Login{
+	err = lemmyclient.ClientLogin(ctx, lemmy.Login{
 		UsernameOrEmail: normalized_username,
 		Password:        password_marker,
 	})
@@ -95,23 +94,22 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	}
 
 	// sync user profile
-	us := types.SaveUserSettings{
-		Auth:        lemmyclient.Token,
-		BotAccount:  types.NewOptional(false),
-		ShowAvatars: types.NewOptional(true),
+	us := lemmy.SaveUserSettings{
+		BotAccount:  lemmy.NewOptional(false),
+		ShowAvatars: lemmy.NewOptional(true),
 	}
 
 	sync_account := false
 
 	if user.AvatarURL != "" {
 		sync_account = true
-		us.Avatar = types.NewOptional(user.AvatarURL)
+		us.Avatar = lemmy.NewOptional(user.AvatarURL)
 	}
 
 	// DisplayName needs to be at least 3 characters long
 	if user.DisplayName != "" && len(user.DisplayName) >= 3 {
 		sync_account = true
-		us.DisplayName = types.NewOptional(user.DisplayName)
+		us.DisplayName = lemmy.NewOptional(user.DisplayName)
 	}
 
 	if sync_account {
