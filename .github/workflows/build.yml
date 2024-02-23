@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     tags:
       - 'v*'
   pull_request:
@@ -53,9 +53,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # step for master/latest (docker only)
+      # step for main/latest (docker only)
       - name: Build and push latest docker image
-        if: success() && github.ref == 'refs/heads/master'
+        if: success() && github.ref == 'refs/heads/main'
         run: |
           go build -ldflags="-s -w -extldflags=-static"
           docker build . -t ghcr.io/minetest-ch/lemmy-oauth-companion:latest
