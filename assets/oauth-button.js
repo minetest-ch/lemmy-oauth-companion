@@ -1,26 +1,29 @@
-
 let created = false;
 
 function createButtons(parentEl) {
     created = true;
-    parentEl.className = "col-sm-12 btn-group";
+    parentEl.className = "col-12";
+    parentEl.append(document.createElement("hr"));
 
     let b = document.createElement("a");
-    b.className = "btn btn-primary";
+    b.className = "btn btn-primary w-100";
     b.innerHTML = `<img src="/oauth-login/assets/github.png" height="24" width="24"/> Login with Github`;
     b.href = "/oauth-login/github";
+    b.style["margin-bottom"] = "5px";
     parentEl.append(b);
 
     b = document.createElement("a");
-    b.className = "btn btn-primary";
+    b.className = "btn btn-primary w-100";
     b.innerHTML = `<img src="/oauth-login/assets/contentdb.png" height="24" width="24"/> Login with ContentDB`;
     b.href = "/oauth-login/cdb";
+    b.style["margin-bottom"] = "5px";
     parentEl.append(b);
 
     b = document.createElement("a");
-    b.className = "btn btn-primary";
+    b.className = "btn btn-primary w-100";
     b.innerHTML = `<img src="/oauth-login/assets/default_mese_crystal.png" height="24" width="24"/> Login with Mesehub`;
     b.href = "/oauth-login/mesehub";
+    b.style["margin-bottom"] = "5px";
     parentEl.append(b);
 }
 
@@ -29,6 +32,7 @@ function findButtonContainer() {
     for (let i=0; i<elements.length; i++) {
         let el = elements[i];
         if (el.type == "submit") {
+            el.className += " w-100";
             return el.parentElement;
         }
     }
