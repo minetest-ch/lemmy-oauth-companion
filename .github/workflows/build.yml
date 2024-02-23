@@ -1,6 +1,12 @@
 name: build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+  pull_request:
 
 jobs:
   build:
@@ -9,42 +15,48 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
 
-      - name: Install Go
+      - name: Set up Go
         uses: actions/setup-go@v5.0.0
         with:
-          go-version: 1.21.x
+          go-version: "1.21"
 
-      - name: Test
-        run: |
-          go test ./... -coverprofile=profile.cov
-
-      - uses: shogo82148/actions-goveralls@v1.8.0
+      - name: Cache Go modules
+        uses: actions/cache@v4
         with:
-          path-to-profile: profile.cov
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Tests
+        run: |
+          go test ./...
 
       - name: Log in to the Container registry
-        if: success() && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # step for main/latest (docker only)
+      # step for tags (v*)
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        if: success() && startsWith(github.ref, 'refs/tags/')
+        with:
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # step for master/latest (docker only)
       - name: Build and push latest docker image
-        if: success() && github.ref == 'refs/heads/main'
+        if: success() && github.ref == 'refs/heads/master'
         run: |
+          go build
           docker build . -t ghcr.io/minetest-ch/lemmy-oauth-companion:latest
           docker push ghcr.io/minetest-ch/lemmy-oauth-companion:latest
-
-      - name: Trigger lemmy.minetest.ch deployment
-        if: success() && github.ref == 'refs/heads/main'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: minetest-ch/lemmy.minetest.ch
-          event-type: deploy

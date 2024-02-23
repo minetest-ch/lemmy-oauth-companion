@@ -41,7 +41,7 @@ CDB_SECRET=
 **Note**: callback url's are in the form of `http://localhost:8080/oauth-login/{provider}/callback` (provider is "github"/"cdb")
 
 ```sh
-docker-compose up --build
+docker-compose up
 ```
 
 Log in to http://localhost:8000 with username `admin` and password `enterenter`

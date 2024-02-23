@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   lemmy:
-    image: dessalines/lemmy:0.19.1
+    image: dessalines/lemmy:0.19.3
     restart: always
     volumes:
       - ./lemmy.hjson:/config/config.hjson:Z
@@ -11,7 +11,7 @@ services:
       - pictrs
 
   lemmy-ui:
-    image: dessalines/lemmy-ui:0.19.1
+    image: dessalines/lemmy-ui:0.19.3
     depends_on:
       - lemmy
     environment:
@@ -20,14 +20,14 @@ services:
     restart: always
 
   pictrs:
-    image: asonix/pictrs:0.5.0
+    image: asonix/pictrs:0.5.6
     user: 991:991
     volumes:
       - "pictrs_data:/mnt"
     restart: always
 
   postgres:
-    image: postgres:16.1
+    image: postgres:16.2
     environment:
       POSTGRES_PASSWORD: enter
     volumes:
@@ -36,8 +36,13 @@ services:
     restart: always
 
   oauth_companion:
-    build:
-      context: ./
+    image: golang:1.21.6
+    working_dir: /app
+    command: ["go", "run", "."]
+    volumes:
+      - "./:/app"
+      - "go_dir:/go"
+      - "go_cache:/.cache"
     environment:
       POSTGRES_URL: postgresql://postgres:enter@postgres/postgres?sslmode=disable
       LEMMY_URL: "http://lemmy:8536"
@@ -65,3 +70,5 @@ services:
 volumes:
  postgres_data: {}
  pictrs_data: {}
+ go_cache: {}
+ go_dir: {}

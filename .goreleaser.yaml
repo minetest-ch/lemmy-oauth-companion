@@ -1,0 +1,15 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=1
+    targets:
+      - linux_amd64
+changelog:
+  sort: asc
+dockers:
+- image_templates:
+    - "ghcr.io/minetest-ch/lemmy-oauth-companion:{{ .Version }}"
+    - "ghcr.io/minetest-ch/lemmy-oauth-companion:latest"
+  dockerfile: Dockerfile
