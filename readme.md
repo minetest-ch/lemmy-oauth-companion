@@ -49,3 +49,8 @@ Log in to http://localhost:8000 with username `admin` and password `enterenter`
 # License
 
 * MIT
+
+## Other assets
+
+* `assets/default_mese_crystal.png` CC BY-SA 3.0 https://github.com/minetest/minetest_game
+* `assets/contentdb.png` GPL v3 https://github.com/minetest/contentdb

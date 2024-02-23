@@ -7,19 +7,19 @@ function createButtons(parentEl) {
 
     let b = document.createElement("a");
     b.className = "btn btn-primary";
-    b.innerText = "Login with Github";
+    b.innerHTML = `<img src="/oauth-login/assets/github.png" height="24" width="24"/> Login with Github`;
     b.href = "/oauth-login/github";
     parentEl.append(b);
 
     b = document.createElement("a");
     b.className = "btn btn-primary";
-    b.innerText = "Login with ContentDB";
+    b.innerHTML = `<img src="/oauth-login/assets/contentdb.png" height="24" width="24"/> Login with ContentDB`;
     b.href = "/oauth-login/cdb";
     parentEl.append(b);
 
     b = document.createElement("a");
     b.className = "btn btn-primary";
-    b.innerText = "Login with Mesehub";
+    b.innerHTML = `<img src="/oauth-login/assets/default_mese_crystal.png" height="24" width="24"/> Login with Mesehub`;
     b.href = "/oauth-login/mesehub";
     parentEl.append(b);
 }
