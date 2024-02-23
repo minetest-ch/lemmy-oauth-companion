@@ -55,3 +55,4 @@ function checkLoginpage() {
 
 document.addEventListener("DOMContentLoaded", checkLoginpage);
 window.addEventListener("click", checkLoginpage);
+setInterval(checkLoginpage, 1000);
