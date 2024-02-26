@@ -136,7 +136,7 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<meta http-equiv="refresh" content="0; url='/'">
+			<meta http-equiv="refresh" content="1; url='/'">
 		</head>
 		<body>
 			<a href="/">Click here if you are not redirected automatically</a>
@@ -164,7 +164,7 @@ func HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 	user, err := p.GetUserInfo(code)
 	if err != nil {
 		w.WriteHeader(500)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte(fmt.Sprintf("Get userinfo error: %v", err)))
 		return
 	}
 
