@@ -24,7 +24,7 @@ func HandleOAuthRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, p.GetRedirectURL(), http.StatusSeeOther)
 }
 
-func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.ResponseWriter, r *http.Request) error {
+func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.ResponseWriter) error {
 	ctx := context.Background()
 
 	lemmyclient, err := lemmy.New(os.Getenv("LEMMY_URL"))
@@ -125,24 +125,24 @@ func handleLogin(user *provider.OAuthUserInfo, password_marker string, w http.Re
 		Value:    lemmyclient.Token,
 		Path:     "/",
 		Secure:   os.Getenv("COOKIE_SECURE") == "true",
-		Expires:  time.Now().Add(time.Hour * 24 * 7),
 		HttpOnly: false,
-		SameSite: http.SameSiteStrictMode,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   3600 * 24 * 7,
 	})
 
 	// serve a "html-redirect" instead of a real 30x to work around this bug: https://stackoverflow.com/a/71467131
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(`
+	w.Write([]byte(fmt.Sprintf(`
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<meta http-equiv="refresh" content="1; url='/'">
+			<meta http-equiv="refresh" content="1; url='/?%d'">
 		</head>
 		<body>
 			<a href="/">Click here if you are not redirected automatically</a>
 		</body>
 	</html>
-	`))
+	`, time.Now().Unix())))
 
 	return nil
 }
@@ -168,7 +168,7 @@ func HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = handleLogin(user, p.GetPasswordMarker(), w, r)
+	err = handleLogin(user, p.GetPasswordMarker(), w)
 	if err != nil {
 		w.WriteHeader(500)
 		w.Write([]byte(err.Error()))
