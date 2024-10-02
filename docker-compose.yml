@@ -36,7 +36,7 @@ services:
     restart: always
 
   oauth_companion:
-    image: golang:1.22.2
+    image: golang:1.23.2
     working_dir: /app
     command: ["go", "run", "."]
     volumes:
